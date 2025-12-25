@@ -26,6 +26,15 @@ import PatientOrders from "./pages/dashboard/PatientOrders";
 import CareJourney from "./pages/dashboard/CareJourney";
 import PatientSettings from "./pages/dashboard/PatientSettings";
 
+// Doctor Dashboard
+import DoctorDashboard from "./pages/doctor/DoctorDashboard";
+import DoctorAppointments from "./pages/doctor/DoctorAppointments";
+import DoctorPatients from "./pages/doctor/DoctorPatients";
+import PatientDetails from "./pages/doctor/PatientDetails";
+import VideoCall from "./pages/doctor/VideoCall";
+import CreatePrescription from "./pages/doctor/CreatePrescription";
+import DoctorSettings from "./pages/doctor/DoctorSettings";
+
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -59,9 +68,16 @@ const App = () => (
                 <Route path="/dashboard/care-journey" element={<CareJourney />} />
                 <Route path="/dashboard/settings" element={<PatientSettings />} />
 
+                {/* Doctor Dashboard */}
+                <Route path="/doctor" element={<DoctorDashboard />} />
+                <Route path="/doctor/appointments" element={<DoctorAppointments />} />
+                <Route path="/doctor/appointments/:appointmentId/video" element={<VideoCall />} />
+                <Route path="/doctor/appointments/:appointmentId/prescription" element={<CreatePrescription />} />
+                <Route path="/doctor/patients" element={<DoctorPatients />} />
+                <Route path="/doctor/patients/:patientId" element={<PatientDetails />} />
+                <Route path="/doctor/settings" element={<DoctorSettings />} />
+
                 {/* Placeholders for other dashboards */}
-                <Route path="/doctor" element={<PatientDashboard />} />
-                <Route path="/doctor/*" element={<PatientDashboard />} />
                 <Route path="/admin" element={<PatientDashboard />} />
                 <Route path="/admin/*" element={<PatientDashboard />} />
                 <Route path="/delivery" element={<PatientDashboard />} />
