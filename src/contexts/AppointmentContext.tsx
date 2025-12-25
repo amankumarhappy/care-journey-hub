@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
+import { toast } from 'sonner';
 
 export type AppointmentStatus = 'pending' | 'confirmed' | 'completed' | 'cancelled';
 
@@ -98,12 +99,46 @@ export function AppointmentProvider({ children }: { children: ReactNode }) {
       status: 'pending',
     };
     setAppointments(prev => [...prev, newAppointment]);
+    
+    // Notification: New appointment booked
+    toast.success('Appointment Booked!', {
+      description: `Your appointment with ${data.doctorName} on ${data.date} at ${data.time} is pending confirmation.`,
+    });
   };
 
   const updateAppointment = (id: string, data: Partial<Appointment>) => {
+    const currentAppointment = appointments.find(apt => apt.id === id);
+    
     setAppointments(prev =>
       prev.map(apt => (apt.id === id ? { ...apt, ...data } : apt))
     );
+
+    // Trigger notifications based on status changes
+    if (currentAppointment) {
+      if (data.status === 'confirmed' && currentAppointment.status !== 'confirmed') {
+        toast.success('Appointment Confirmed!', {
+          description: `Your appointment with ${currentAppointment.doctorName} on ${currentAppointment.date} has been confirmed.`,
+        });
+      }
+      
+      if (data.status === 'cancelled' && currentAppointment.status !== 'cancelled') {
+        toast.error('Appointment Declined', {
+          description: `The appointment on ${currentAppointment.date} was not accepted.`,
+        });
+      }
+      
+      if (data.status === 'completed' && currentAppointment.status !== 'completed') {
+        toast.success('Consultation Completed!', {
+          description: `Your consultation with ${currentAppointment.doctorName} is complete.`,
+        });
+      }
+      
+      if (data.prescription && !currentAppointment.prescription) {
+        toast.success('Prescription Created!', {
+          description: `${data.prescription.medicines.length} medicine(s) prescribed. Delivery team notified.`,
+        });
+      }
+    }
   };
 
   const getPatientAppointments = (patientId: string) => {
@@ -123,6 +158,8 @@ export function AppointmentProvider({ children }: { children: ReactNode }) {
   };
 
   const updatePrescriptionDelivery = (prescriptionId: string, data: Partial<Prescription>) => {
+    const currentAppointment = appointments.find(apt => apt.prescription?.id === prescriptionId);
+    
     setAppointments(prev =>
       prev.map(apt => {
         if (apt.prescription?.id === prescriptionId) {
@@ -134,6 +171,29 @@ export function AppointmentProvider({ children }: { children: ReactNode }) {
         return apt;
       })
     );
+
+    // Trigger notifications for delivery status changes
+    if (currentAppointment?.prescription) {
+      const oldStatus = currentAppointment.prescription.deliveryStatus;
+      
+      if (data.deliveryStatus === 'accepted' && oldStatus !== 'accepted') {
+        toast.info('Delivery Accepted', {
+          description: `A delivery partner has accepted your medicine order.`,
+        });
+      }
+      
+      if (data.deliveryStatus === 'out_for_delivery' && oldStatus !== 'out_for_delivery') {
+        toast.info('Out for Delivery', {
+          description: `Your medicines are on the way!`,
+        });
+      }
+      
+      if (data.deliveryStatus === 'delivered' && oldStatus !== 'delivered') {
+        toast.success('Delivered!', {
+          description: `Your medicines have been delivered successfully.`,
+        });
+      }
+    }
   };
 
   return (
