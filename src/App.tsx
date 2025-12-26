@@ -35,6 +35,14 @@ import VideoCall from "./pages/doctor/VideoCall";
 import CreatePrescription from "./pages/doctor/CreatePrescription";
 import DoctorSettings from "./pages/doctor/DoctorSettings";
 
+// Admin Dashboard
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import DoctorApprovals from "./pages/admin/DoctorApprovals";
+import UserManagement from "./pages/admin/UserManagement";
+import OrderMonitoring from "./pages/admin/OrderMonitoring";
+import TranscriptReview from "./pages/admin/TranscriptReview";
+import AdminSettings from "./pages/admin/AdminSettings";
+
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -77,9 +85,15 @@ const App = () => (
                 <Route path="/doctor/patients/:patientId" element={<PatientDetails />} />
                 <Route path="/doctor/settings" element={<DoctorSettings />} />
 
-                {/* Placeholders for other dashboards */}
-                <Route path="/admin" element={<PatientDashboard />} />
-                <Route path="/admin/*" element={<PatientDashboard />} />
+                {/* Admin Dashboard */}
+                <Route path="/admin" element={<AdminDashboard />} />
+                <Route path="/admin/approvals" element={<DoctorApprovals />} />
+                <Route path="/admin/users" element={<UserManagement />} />
+                <Route path="/admin/orders" element={<OrderMonitoring />} />
+                <Route path="/admin/transcripts" element={<TranscriptReview />} />
+                <Route path="/admin/settings" element={<AdminSettings />} />
+
+                {/* Delivery Dashboard - Placeholder */}
                 <Route path="/delivery" element={<PatientDashboard />} />
                 <Route path="/delivery/*" element={<PatientDashboard />} />
 
